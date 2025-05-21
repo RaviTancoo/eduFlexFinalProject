@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import oracledb from 'oracledb';
+//import oracledb from 'oracledb';
 import path from 'path';
 
 import express, { json } from 'express';
@@ -28,11 +28,14 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// OracleDB (only connect if wallet folder exists)
-const walletPath = path.join(process.cwd(), 'wallet');
 
-import fs from 'fs';
-if (fs.existsSync(walletPath)) {
+  // OracleDB (only connect if wallet folder exists)
+
+//const walletPath = path.join(process.cwd(), 'wallet');
+
+if (process.env.USE_ORACLE === 'true') {
+  const walletPath = path.join(process.cwd(), 'wallet');
+
   async function connectToOracle() {
     try {
       process.env.TNS_ADMIN = walletPath;
