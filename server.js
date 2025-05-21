@@ -29,10 +29,8 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
 
-  // OracleDB (only connect if wallet folder exists)
 
-//const walletPath = path.join(process.cwd(), 'wallet');
-
+/*
 if (process.env.USE_ORACLE === 'true') {
   const walletPath = path.join(process.cwd(), 'wallet');
 
@@ -54,7 +52,8 @@ if (process.env.USE_ORACLE === 'true') {
   connectToOracle();
 } else {
   console.log("ℹ️ Oracle wallet not found — skipping Oracle DB connection.");
-}
+}*/
+console.log("ℹ️ Skipping Oracle DB connection for Render deployment.");
 
 // Start server
 const PORT = process.env.PORT || 3000;
