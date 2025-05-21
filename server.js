@@ -9,6 +9,8 @@ import userRoutes from './routes/user.js';
 import contentRoutes from './routes/content.js';
 import { mongoCourseRoutes } from './routes/mongoRoutes.js'; // ✅ named import
 
+import { fileURLToPath } from 'url';
+
 const app = express();
 
 // middleware
@@ -54,3 +56,8 @@ app.listen(PORT, () => {
 
 app.use('/api', mongoCourseRoutes);
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static files from public/
+app.use(express.static(path.join(__dirname, 'public')));
