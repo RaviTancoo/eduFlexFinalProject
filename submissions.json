@@ -1,0 +1,35 @@
+[
+  {
+    "submission_id": "sub001",
+    "assignment_title": "DADA Creature Report",
+    "course_id": 101,
+    "student_id": 1,
+    "submitted_on": "2025-05-17T10:00:00Z",
+    "file_url": "https://hogwarts.edu/submissions/harry-dada-report",
+    "grade": 95,
+    "feedback": "Excellent detail on Boggarts and Red Caps."
+  },
+
+  {
+    "submission_id": "sub002",
+    "assignment_title": "Polyjuice Analysis",
+    "course_id": 102,
+    "student_id": 5,
+    "submitted_on": "2025-05-16T15:30:00Z",
+    "file_url": "https://hogwarts.edu/submissions/hermione-polyjuice",
+    "grade": 100,
+    "feedback": "Outstanding! Perfect breakdown of ingredients and steps."
+  },
+
+  {
+    "submission_id": "sub003",
+    "assignment_title": "Shield Spells Practical",
+    "course_id": 101,
+    "student_id": 3,
+    "submitted_on": "2025-05-18T09:45:00Z",
+    "file_url": "https://hogwarts.edu/submissions/ron-shieldspells",
+    "grade": 88,
+    "feedback": "Good effort. Work on timing your Protego spell."
+  }
+  
+]

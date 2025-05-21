@@ -1,0 +1,50 @@
+[
+  {
+    "course_id": 101,
+    "title": "Defense Against the Dark Arts",
+    "lessons": [
+      {
+        "lesson_id": "dada1",
+        "topic": "Introduction to Dark Creatures",
+        "content": "Learn about Boggarts, Grindylows, and more.",
+        "resources": [
+          "https://harrypotter.fandom.com/wiki/Boggart",
+          "https://harrypotter.fandom.com/wiki/Grindylow"
+        ]
+      },
+      {
+        "lesson_id": "dada2",
+        "topic": "Counter-Curses and Shield Spells",
+        "content": "Mastering spells like Protego and Rictusempra.",
+        "resources": [
+          "https://harrypotter.fandom.com/wiki/Protego",
+          "https://harrypotter.fandom.com/wiki/Rictusempra"
+        ]
+      }
+    ]
+  },
+  
+  {
+    "course_id": 102,
+    "title": "Potions",
+    "lessons": [
+      {
+        "lesson_id": "pot1",
+        "topic": "Basics of Potion Brewing",
+        "content": "Introduction to cauldrons, ingredients, and safety.",
+        "resources": [
+          "https://harrypotter.fandom.com/wiki/Potion",
+          "https://harrypotter.fandom.com/wiki/Cauldron"
+        ]
+      },
+      {
+        "lesson_id": "pot2",
+        "topic": "Polyjuice Potion",
+        "content": "A complicated potion allowing the drinker to assume the form of someone else.",
+        "resources": [
+          "https://harrypotter.fandom.com/wiki/Polyjuice_Potion"
+        ]
+      }
+    ]
+  }
+]

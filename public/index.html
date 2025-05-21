@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EduFlex Registration</title>
+</head>
+<body>
+  <h2>Register User</h2>
+  <form id="registerForm">
+    <input type="text" id="user_id" placeholder="User ID" required><br>
+    <input type="text" id="first_name" placeholder="First Name" required><br>
+    <input type="text" id="last_name" placeholder="Last Name" required><br>
+    <input type="email" id="email" placeholder="Email" required><br>
+    <select id="role" required>
+      <option value="">Select Role</option>
+      <option value="student">Student</option>
+      <option value="teacher">Instructor</option>
+    </select><br><br>
+    <button type="submit">Register</button>
+  </form>
+  <div id="response"></div>
+
+  <h2>User Check</h2>
+
+  <button id="countBtn">Get Registered User Count</button>
+  <p id="countResult"></p>
+
+  <h2>Update User Role</h2>
+  <form id="updateRoleForm">
+    <input type="text" id="update_user_id" placeholder="User ID" required><br>
+    <select id="new_role" required>
+      <option value="">Select New Role</option>
+      <option value="student">Student</option>
+      <option value="instructor">Instructor</option>
+    </select><br><br>
+    <button type="submit">Update Role</button>
+  </form>
+  <p id="updateResult"></p>
+
+  <h2>Delete User</h2>
+  <form id="deleteUserForm">
+    <input type="number" id="delete_user_id" placeholder="User ID" required><br>
+    <input type="text" id="delete_first_name" placeholder="First Name" required><br>
+    <input type="text" id="delete_last_name" placeholder="Last Name" required><br>
+    <button type="submit">Delete</button>
+  </form>
+  <p id="deleteResult"></p>
+
+  <br><br>
+
+  <h2> <i>View Course Content</i></h2>
+  <input type="number" id="courseId" placeholder="Enter Course ID (e.g., 101)">
+  <button onclick="fetchCourse()">Get Course</button>
+  
+  <div id="courseResult"></div>
+
+  <br><br>
+  <h2> <i>Grade Assignment</i></h2>
+    <form id="submissionForm">
+    <input type="text" id="submission_id" placeholder="Submission ID" required>  <br>
+    <input type="text" id="assignment_title" placeholder="Assignment Title" required>   <br>
+    <input type="number" id="course_id" placeholder="Course ID" required>  <br>
+    <input type="number" id="student_id" placeholder="Student ID" required>  <br>
+    <input type="datetime-local" id="submitted_on" required>  <br>
+    <input type="url" id="file_url" placeholder="File URL" required>  <br>
+    <input type="number" id="grade" placeholder="Grade" required>  <br>
+    <input type="text" id="feedback" placeholder="Feedback" required>  <br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="insertResult"></div>
+
+  <h2><i>Update Lesson in Course</i></h2>
+  <form id="updateLessonForm">
+    <input type="number" id="course_id_update" placeholder="Course ID (e.g. 102)" required><br>
+    <input type="text" id="lesson_id_update" placeholder="Lesson ID (e.g. pot2)" required><br>
+    <input type="text" id="topic_update" placeholder="New Topic"><br>
+    <input type="text" id="content_update" placeholder="New Content"><br>
+    <textarea id="resources_update" placeholder="New Resources (comma-separated URLs)"></textarea><br>
+    <br>
+    <button type="submit">Update Lesson</button>
+  </form>
+  
+  <p id="lessonUpdateResult"></p>
+
+
+  <h2> <i>Submissions Count Per Course</i></h2>
+  <button id="countSubmissionsBtn">Get Submissions Count</button>
+  <pre id="submissionsCountResult"></pre>
+
+
+
+
+
+
+
+<script>
+  document.getElementById("registerForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const data = {
+      user_id: document.getElementById("user_id").value,
+      first_name: document.getElementById("first_name").value,
+      last_name: document.getElementById("last_name").value,
+      email: document.getElementById("email").value,
+      role: document.getElementById("role").value
+    };
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const json = await response.json();
+      document.getElementById("response").innerText = json.message || "Success!";
+    } catch (err) {
+      document.getElementById("response").innerText = "Network error.";
+    }
+  });
+
+  document.getElementById("countBtn").addEventListener("click", async function () {
+    try {
+      const response = await fetch("/api/count");
+      const json = await response.json();
+      const counts = json.counts;
+
+      let output = " ";
+      for (const role in counts) {
+        output += `${role.charAt(0).toUpperCase() + role.slice(1)}s: ${counts[role]}\n`;
+      }
+
+      document.getElementById("countResult").innerText = output;
+    } catch (err) {
+      document.getElementById("countResult").innerText = "Failed to fetch count.";
+    }
+  });
+
+  document.getElementById("updateRoleForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const user_id = document.getElementById("update_user_id").value;
+    const new_role = document.getElementById("new_role").value;
+
+    try {
+      const response = await fetch("/api/update-role", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id, new_role })
+      });
+
+      const result = await response.json();
+      if (result.status === "success") {
+        document.getElementById("updateResult").innerText =
+          `Updated user ${user_id} to role "${new_role}".`;
+      } else {
+        document.getElementById("updateResult").innerText = `Error: ${result.message}`;
+      }
+    } catch (error) {
+      console.error(error);
+      document.getElementById("updateResult").innerText = "Request failed.";
+    }
+  });
+
+  document.getElementById("deleteUserForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const user_id = document.getElementById("delete_user_id").value;
+    const first_name = document.getElementById("delete_first_name").value;
+    const last_name = document.getElementById("delete_last_name").value;
+
+    try {
+      const response = await fetch("/api/delete-user", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id, first_name, last_name })
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        document.getElementById("deleteResult").innerText = result.message;
+      } else {
+        document.getElementById("deleteResult").innerText = `Error: ${result.message}`;
+      }
+    } catch (error) {
+      console.error(error);
+      document.getElementById("deleteResult").innerText = "Request failed.";
+    }
+  });
+
+  async function fetchCourse() {
+    const courseId = document.getElementById('courseId').value;
+    
+    try {
+      const res = await fetch(`/api/course/${courseId}`);
+      const data = await res.json();
+
+      console.log("Raw response:", data);  // ✅ Useful for debugging
+      const resultDiv = document.getElementById("courseResult");
+
+      if (!data || data.length === 0) {
+        resultDiv.innerText = "No course found.";
+        return;
+      }
+
+      const course = Array.isArray(data) ? data[0] : data;
+      let html = `<h3>${course.title}</h3><ul>`;
+
+      for (const lesson of course.lessons || []) {
+        html += `<li><strong>${lesson.topic}</strong><br>${lesson.content}<br>`;
+        if (lesson.resources && lesson.resources.length) {
+          html += `Resources:<ul>`;
+          for (const link of lesson.resources) {
+            html += `<li><a href="${link}" target="_blank">${link}</a></li>`;
+          }
+          html += `</ul>`;
+        }
+        html += `</li>`;
+      }
+
+      html += `</ul>`;
+      resultDiv.innerHTML = html;
+
+    } catch (error) {
+      console.error(error);
+      document.getElementById("courseResult").innerText = "Failed to load course.";
+    }
+  }
+
+  document.getElementById("submissionForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const submissionData = {
+    submission_id: document.getElementById("submission_id").value,
+    assignment_title: document.getElementById("assignment_title").value,
+    course_id: parseInt(document.getElementById("course_id").value),
+    student_id: parseInt(document.getElementById("student_id").value),
+    submitted_on: new Date(document.getElementById("submitted_on").value),
+    file_url: document.getElementById("file_url").value,
+    grade: parseInt(document.getElementById("grade").value),
+    feedback: document.getElementById("feedback").value
+  };
+
+  try {
+    const response = await fetch("/api/insert-submission", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(submissionData)
+    });
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+      document.getElementById("insertResult").innerText = "Submission inserted successfully!";
+    } else {
+      document.getElementById("insertResult").innerText = `Error: ${result.message}`;
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById("insertResult").innerText = "Request failed.";
+  }
+});
+
+document.getElementById("updateLessonForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const courseId = document.getElementById("course_id_update").value;
+    const lessonId = document.getElementById("lesson_id_update").value;
+    const topic = document.getElementById("topic_update").value;
+    const content = document.getElementById("content_update").value;
+    const resourcesInput = document.getElementById("resources_update").value;
+
+const updatedFields = {};
+    if (topic) updatedFields.topic = topic;
+    if (content) updatedFields.content = content;
+    if (resourcesInput) {
+      // Split by comma, trim whitespace
+      updatedFields.resources = resourcesInput.split(",").map(url => url.trim()).filter(Boolean);
+    }
+
+    const response = await fetch(`/api/mongo/update-lesson/${courseId}/${lessonId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedFields)
+    });
+
+    const result = await response.json();
+    document.getElementById("lessonUpdateResult").innerText = result.message;
+  });
+
+  document.getElementById("countSubmissionsBtn").addEventListener("click", async () => {
+  const resultEl = document.getElementById("submissionsCountResult");
+  resultEl.innerText = "Loading...";
+
+  try {
+    const response = await fetch("/api/mongo/submissions-count-per-course");
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const data = await response.json();
+
+    if (data.length === 0) {
+      resultEl.innerText = "No submissions found.";
+      return;
+    }
+
+    // Format output nicely
+    let output = "";
+    data.forEach(({ _id, totalSubmissions }) => {
+      output += `Course ID ${_id}: ${totalSubmissions} submission${totalSubmissions > 1 ? 's' : ''}\n`;
+    });
+
+    resultEl.innerText = output;
+
+  } catch (error) {
+    console.error(error);
+    resultEl.innerText = "Failed to fetch submissions count.";
+  }
+});
+
+
+</script>
+
+</body>
+</html>
